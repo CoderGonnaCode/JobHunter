@@ -1,6 +1,12 @@
 from django.db import models
 
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import User
+
+def upload_thumb(instance, filename):
+    lastDot = filename.rfind('.')
+    extension= filename[lastDot:len(filename):1]
+    return '%s-%s%s' % (instance.full_name, time.time(), extension)
 
 class JobArea(models.Model):
     title =models.CharField(max_length=100)
@@ -11,6 +17,7 @@ class JobArea(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
 class Hunter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20,blank=True, null=True)
@@ -19,7 +26,7 @@ class Hunter(models.Model):
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=100)
     position = models.CharField(max_length=100, blank=True, null=True)  # beginner, junior , middle, senior, etc.
-    thumbnailPath = models.ImageField(blank=True, null=True)
+    thumbnailPath = models.ImageField(upload_to=upload_thumb,blank=True, null=True)
     skills =  ArrayField(models.CharField(max_length=200),default=list)
     job_area =models.ForeignKey(JobArea,on_delete=models.CASCADE,related_name='hunters')
     experience = models.IntegerField(blank=True, null=True) # TODO need  Map Field like {'python': 3, 'django': 1 }

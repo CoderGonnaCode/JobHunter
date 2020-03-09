@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Hunter, JobArea, Company, Internship, Stack, Roadmap, PlanItem, Test, Vacancy
-
+from myauth.serializers import UserSerializer
 
 class JobAreaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,9 +9,10 @@ class JobAreaSerializer(serializers.ModelSerializer):
 
 class HunterSerializer(serializers.ModelSerializer):
     job_area = JobAreaSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Hunter
-        fields = ('id', 'full_name', 'email', 'phone', 'birthday', 'isFemale', 'address', 'city','position','thumbnail_path',"skills", "job_area",'experience', 'interests','github_link', 'linkedin_link', 'instagram_link', 'account_created_on' )
+        fields = ('id', "user",'full_name', 'email', 'phone', 'birthday', 'isFemale', 'address', 'city','position','thumbnailPath',"skills", "job_area",'experience', 'interests','github_link', 'linkedin_link', 'instagram_link', 'account_created_on' )
 
 class CompanySerializer(serializers.ModelSerializer):
     job_area = JobAreaSerializer(read_only=True)
