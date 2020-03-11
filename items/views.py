@@ -1,16 +1,37 @@
 from django.shortcuts import render
 from .models import Hunter, JobArea, Company, Internship, Stack, Roadmap, PlanItem, Test, Vacancy
 from .serializers import HunterSerializer, JobAreaSerializer, CompanySerializer, IntershipSerializer, StackSerializer, RoadmapSerializer,PlanItemSerializer,TestSerializer,VacancySerializer
-from rest_framework.views import APIView, Response
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, AllowAny, SAFE_METHODS, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework import status
 
 class JobAreaViews(APIView):
 
-    serilizer_class = JobAreaSerializer
+    serializer_class = JobAreaSerializer
     def get(self, request, format=None):
         job_areas = JobArea.objects.all()
-        serilized = self.serilizer_class(job_areas, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(job_areas, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            job_area = JobArea(
+            id = serializer.validated_data.get("id"),
+            title=serializer.validated_data.get("title"),
+            related_words=serializer.validated_data.get("related_words"),
+            description=serializer.validated_data.get("description"),
+            rank=serializer.validated_data.get("rank"),
+            popularity=serializer.validated_data.get("popularity"),
+            )
+            job_area.save()
+
+            response_serializer = self.serilizer_class(job_area)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class HunterViews(APIView):
 

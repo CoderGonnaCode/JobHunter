@@ -11,4 +11,5 @@ urlpatterns = [
     path('roadmaps', views.RoadmapViews.as_view()),
     path('plan_items', views.PlanItemViews.as_view()),
     path('tests', views.TestViews.as_view())
+
 ]
