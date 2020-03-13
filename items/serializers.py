@@ -18,7 +18,7 @@ class CompanySerializer(serializers.ModelSerializer):
     job_area = JobAreaSerializer(read_only=True)
     class Meta:
         model = Company
-        fields = ('id', 'name', 'address', 'city', 'description', 'rank', 'thumbnailPath', 'linkedin_link', 'instagram_link')
+        fields = ('id', 'name', 'address', 'city', 'description', 'rank', 'thumbnailPath', 'linkedin_link', 'instagram_link', 'job_area')
 
 class VacancySerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
@@ -29,6 +29,7 @@ class VacancySerializer(serializers.ModelSerializer):
 
 class IntershipSerializer(serializers.ModelSerializer):
     job_area = JobAreaSerializer(read_only=True)
+    company = CompanySerializer(read_only=True)
     class Meta:
         model = Internship
         fields = ('id', 'title', 'start_date', 'company','job_area', 'description', 'estimated_salary', 'duration', 'status', 'created_on')

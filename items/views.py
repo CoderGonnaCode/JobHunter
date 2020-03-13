@@ -39,8 +39,8 @@ class HunterViews(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     def get(self, request, format=None):
         hunters = Hunter.objects.all()
-        serilized = self.serializer_class(hunters, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(hunters, many = True)
+        return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
@@ -79,8 +79,8 @@ class CompanyViews(APIView):
     serializer_class = CompanySerializer
     def get(self, request, format=None):
         companies = Company.objects.all()
-        serilized = self.serializer_class(companies, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(companies, many = True)
+        return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
@@ -94,60 +94,177 @@ class CompanyViews(APIView):
             rank = serializer.validated_data.get("rank"),
             thumbnailPath = request.data.get("thumbnailPath"),
             linkedin_link = serializer.validated_data.get("linkedin_link"),
-            instagram_link = serializer.validated_data.get("instagram_link")
+            instagram_link = serializer.validated_data.get("instagram_link"),
             )
             company.save()
             response_serializer = self.serializer_class(company)
             return Response(response_serializer.data)
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        
 
+        
 
 class VacancyViews(APIView):
 
-    serilizer_class = VacancySerializer
+    serializer_class = VacancySerializer
     def get(self, request, format=None):
         vacancies = Vacancy.objects.all()
-        serilized = self.serilizer_class(vacancies, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(vacancies, many = True)
+        return Response(serializer.data)
 
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            vacancy = Vacancy(
+            id = serializer.validated_data.get("id"),
+            title = serializer.validated_data.get("title"),
+            company = Company.objects.get(pk=request.POST["company"]),
+            job_area = JobArea.objects.get(pk=request.POST["job_area"]),
+            requirements = serializer.validated_data.get("requirements"),
+            min_exp_time = serializer.validated_data.get("min_exp_time"),
+            description = serializer.validated_data.get("description"),
+            estimated_salary = serializer.validated_data.get("estimated_salary"),
+            perks = serializer.validated_data.get("perks"),
+            status = serializer.validated_data.get("status"),
+            created_on = serializer.validated_data.get("created_on"),
+            )
+            vacancy.save()
+            response_serializer = self.serializer_class(vacancy)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    
 class InternshipViews(APIView):
 
-    serilizer_class = IntershipSerializer
+    serializer_class = IntershipSerializer
     def get(self, request, format=None):
         internships = Internship.objects.all()
-        serilized = self.serilizer_class(internships, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(internships, many = True)
+        return Response(serializer.data)
 
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            internship = Internship(
+            id = serializer.validated_data.get("id"),
+            title = serializer.validated_data.get("title"),
+            start_date = serializer.validated_data.get("start_date"),
+            company = Company.objects.get(pk=request.POST["company"]),
+            job_area = JobArea.objects.get(pk=request.POST["job_area"]),
+            description = serializer.validated_data.get("description"),
+            estimated_salary = serializer.validated_data.get("estimated_salary"),
+            duration = serializer.validated_data.get("duration"),
+            status = serializer.validated_data.get("status"),
+            created_on = serializer.validated_data.get("created_on")
+            )
+            internship.save()
+            response_serializer = self.serializer_class(internship)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            
+        
 class StackViews(APIView):
 
-    serilizer_class = StackSerializer
+    serializer_class = StackSerializer
     def get(self, request, format=None):
         stacks = Stack.objects.all()
-        serilized = self.serilizer_class(stacks, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(stacks, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            stack = Stack(
+            id = serializer.validated_data.get("id"),
+            title = serializer.validated_data.get("title"),
+            job_area = JobArea.objects.get(pk=request.POST["job_area"]),
+            description = serializer.validated_data.get("description"),
+            popularity = serializer.validated_data.get("popularity"),
+            features = serializer.validated_data.get("features"),
+            created_on = serializer.validated_data.get("created_on")
+            )
+            stack.save()
+            response_serializer = self.serializer_class(stack)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class RoadmapViews(APIView):
 
-    serilizer_class = RoadmapSerializer
+    serializer_class = RoadmapSerializer
     def get(self, request, format=None):
         roadmaps = Roadmap.objects.all()
-        serilized = self.serilizer_class(roadmaps, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(roadmaps, many = True)
+        return Response(serializer.data)
 
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            roadmap = Roadmap(
+            id = serializer.validated_data.get("id"),
+            title = serializer.validated_data.get("title"),
+            plan = serializer.validated_data.get("plan"),
+            created_on = serializer.validated_data.get("created_on"),
+            updated_on = serializer.validated_data.get("updated_on")
+            )
+            roadmap.save()
+            response_serializer = self.serializer_class(roadmap)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+# 'id', 'title', 'created_on' , 'updated_on', 'roadmap', 'technologies', 'useful_links', 'tutorials'
 class PlanItemViews(APIView):
 
-    serilizer_class = PlanItemSerializer
+    serializer_class = PlanItemSerializer
     def get(self, request, format=None):
         plan_items = PlanItem.objects.all()
-        serilized = self.serilizer_class(plan_items, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(plan_items, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            plan_item = PlanItem(
+            id = serializer.validated_data.get("id"),
+            title = serializer.validated_data.get("title"),
+            created_on = serializer.validated_data.get("created_on"),
+            updated_on = serializer.validated_data.get("updated_on"),
+            roadmap = Roadmap.objects.get(pk=request.POST["roadmap"]),
+            technologies = serializer.validated_data.get("technologies"),
+            useful_links = serializer.validated_data.get("useful_links"),
+            tutorials = serializer.validated_data.get("tutorials")
+            )
+            plan_item.save()
+            response_serializer=self.serializer_class(plan_item)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class TestViews(APIView):
 
-    serilizer_class = TestSerializer
+    serializer_class = TestSerializer
     def get(self, request, format=None):
         tests = Test.objects.all()
-        serilized = self.serilizer_class(tests, many = True)
-        return Response(serilized.data)
+        serializer = self.serializer_class(tests, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            test = Test(
+            id = serializer.validated_data.get("id"),
+            stack = Stack.objects.get(pk=request.POST["stack"]),
+            questions = serializer.validated_data.get("questions"),
+            solutions = serializer.validated_data.get("solutions")
+            )
+            test.save()
+            response_serializer=self.serializer_class(test)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
