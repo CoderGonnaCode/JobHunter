@@ -27,7 +27,7 @@ class JobAreaViews(APIView):
             )
             job_area.save()
 
-            response_serializer = self.serilizer_class(job_area)
+            response_serializer = self.serializer_class(job_area)
             return Response(response_serializer.data)
         else:
             return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -42,14 +42,67 @@ class HunterViews(APIView):
         serilized = self.serializer_class(hunters, many = True)
         return Response(serilized.data)
 
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            hunter = Hunter(
+            id = serializer.validated_data.get("id"),
+            user = request.user,
+            full_name = serializer.validated_data.get("full_name"),
+            email = serializer.validated_data.get("email"),
+            phone = serializer.validated_data.get("phone"),
+            birthday = serializer.validated_data.get("birthday"),
+            isFemale = serializer.validated_data.get("isFemale"),
+            address = serializer.validated_data.get("address"),
+            city = serializer.validated_data.get("city"),
+            position = serializer.validated_data.get("position"),
+            thumbnailPath = request.data.get("thumbnailPath"),
+            skills = serializer.validated_data.get("skills"),
+            job_area = JobArea.objects.get(pk=request.POST["job_area"]),
+            experience = serializer.validated_data.get("experience"),
+            interests = serializer.validated_data.get("interests"),
+            github_link = serializer.validated_data.get("github_link"),
+            linkedin_link = serializer.validated_data.get("linkedin_link"),
+            instagram_link = serializer.validated_data.get("instagram_link"),
+            account_created_on = serializer.validated_data.get("account_created_on"),
+            )
+
+            hunter.save()
+            response_serializer = self.serializer_class(hunter)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CompanyViews(APIView):
 
-    serilizer_class = CompanySerializer
+    serializer_class = CompanySerializer
     def get(self, request, format=None):
         companies = Company.objects.all()
-        serilized = self.serilizer_class(companies, many = True)
+        serilized = self.serializer_class(companies, many = True)
         return Response(serilized.data)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            company = Company(
+            id = serializer.validated_data.get("id"),
+            name = serializer.validated_data.get("name"),
+            address = serializer.validated_data.get("address"),
+            city = serializer.validated_data.get("city"),
+            description = serializer.validated_data.get("description"),
+            rank = serializer.validated_data.get("rank"),
+            thumbnailPath = request.data.get("thumbnailPath"),
+            linkedin_link = serializer.validated_data.get("linkedin_link"),
+            instagram_link = serializer.validated_data.get("instagram_link")
+            )
+            company.save()
+            response_serializer = self.serializer_class(company)
+            return Response(response_serializer.data)
+        else:
+            Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
 class VacancyViews(APIView):
 
