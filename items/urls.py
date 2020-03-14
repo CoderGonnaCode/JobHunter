@@ -15,6 +15,9 @@ urlpatterns = [
     path('stacks', views.StackViews.as_view()),
     path('stacks/<int:pk>', views.DeleteStackAreaView.as_view()),
     path('roadmaps', views.RoadmapViews.as_view()),
+    path('roadmaps/<int:pk>', views.DeleteRoadmapView.as_view()),
     path('plan_items', views.PlanItemViews.as_view()),
-    path('tests', views.TestViews.as_view())
+    path('plan_items/<int:pk>', views.DeletePlanView.as_view()),
+    path('tests', views.TestViews.as_view()),
+    path('tests/<int:pk>', views.DeleteTestView.as_view())
 ]

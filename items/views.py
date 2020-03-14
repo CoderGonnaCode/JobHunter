@@ -354,6 +354,13 @@ class RoadmapViews(APIView):
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 # 'id', 'title', 'created_on' , 'updated_on', 'roadmap', 'technologies', 'useful_links', 'tutorials'
+
+class DeleteRoadmapView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Roadmap.objects.get(pk=pk).delete()
+        return Response({"success": "1 roadmap deleted"}, status=200)
+
 class PlanItemViews(APIView):
 
     serializer_class = PlanItemSerializer
@@ -381,6 +388,11 @@ class PlanItemViews(APIView):
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+class DeletePlanView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        PlanItem.objects.get(pk=pk).delete()
+        return Response({"success": "1 plan deleted"}, status=200)
 
 class TestViews(APIView):
 
@@ -404,3 +416,10 @@ class TestViews(APIView):
             return Response(response_serializer.data)
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteTestView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Test.objects.get(pk=pk).delete()
+        return Response({"success": "1 test deleted"}, status=200)
