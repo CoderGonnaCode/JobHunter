@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework import status
 
 class JobAreaViews(APIView):
-
     serializer_class = JobAreaSerializer
     def get(self, request, format=None):
         job_areas = JobArea.objects.all()
@@ -32,6 +31,25 @@ class JobAreaViews(APIView):
         else:
             return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            job_area = JobArea.objects.get(pk=request.POST["id"])
+            job_area.title=serializer.validated_data.get("title")
+            job_area.realated_words=serializer.validated_data.get("related_words") 
+            job_area.rank=serializer.validated_data.get("rank") 
+            job_area.popularity=serializer.validated_data.get("popularity") 
+            job_area.save()
+            response_serializer = self.serializer_class(job_area)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteJobAreaView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        JobArea.objects.get(pk=pk).delete()
+        return Response({"success": "1 job_area deleted"}, status=200)
 
 class HunterViews(APIView):
 
@@ -102,6 +120,30 @@ class CompanyViews(APIView):
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            company = Company.objects.get(pk=request.POST["id"])
+            company.name=serializer.validated_data.get("name")
+            company.address=serializer.validated_data.get("address") 
+            company.city=serializer.validated_data.get("city") 
+            company.description=serializer.validated_data.get("description") 
+            company.rank=serializer.validated_data.get("rank") 
+            company.thumbnailPath=serializer.validated_data.get("thumbnailPath") 
+            company.linkedin_link=serializer.validated_data.get("linkedin_link") 
+            company.instagram_link=serializer.validated_data.get("instagram_link") 
+            company.save()
+            response_serializer = self.serializer_class(company)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteCompanyAreaView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Company.objects.get(pk=pk).delete()
+        return Response({"success": "1 company deleted"}, status=200)
+
         
 
 class VacancyViews(APIView):
@@ -134,6 +176,30 @@ class VacancyViews(APIView):
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            vacancy = Vacancy.objects.get(pk=request.POST["id"])
+            vacancy.title=serializer.validated_data.get("title")
+            vacancy.min_exp_time=serializer.validated_data.get("min_exp_time") 
+            vacancy.requirements=serializer.validated_data.get("requirements") 
+            vacancy.description=serializer.validated_data.get("description") 
+            vacancy.estimated_salary=serializer.validated_data.get("estimated_salary") 
+            vacancy.perks=serializer.validated_data.get("perks") 
+            vacancy.status=serializer.validated_data.get("status")
+            vacancy.job_area=JobArea.objects.get(pk=request.POST["job_area"]) 
+            vacancy.company=Company.objects.get(pk=request.POST["company"]) 
+            vacancy.save()
+            response_serializer = self.serializer_class(vacancy)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteVacancyAreaView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Vacancy.objects.get(pk=pk).delete()
+        return Response({"success": "1 vacancy deleted"}, status=200)
     
 class InternshipViews(APIView):
 
@@ -163,7 +229,31 @@ class InternshipViews(APIView):
             return Response(response_serializer.data)
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-            
+    
+    def put(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            internship = Internship.objects.get(pk=request.POST["id"])
+            internship.title=serializer.validated_data.get("title")
+            internship.start_date=serializer.validated_data.get("start_date") 
+            internship.requirements=serializer.validated_data.get("requirements") 
+            internship.description=serializer.validated_data.get("description") 
+            internship.estimated_salary=serializer.validated_data.get("estimated_salary") 
+            internship.duration=serializer.validated_data.get("duration") 
+            internship.status=serializer.validated_data.get("status")
+            internship.job_area=JobArea.objects.get(pk=request.POST["job_area"]) 
+            internship.company=Company.objects.get(pk=request.POST["company"]) 
+            internship.save()
+            response_serializer = self.serializer_class(internship)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteInternshipAreaView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Internship.objects.get(pk=pk).delete()
+        return Response({"success": "1 internship deleted"}, status=200)
         
 class StackViews(APIView):
 
@@ -191,6 +281,26 @@ class StackViews(APIView):
         else:
             Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            stack = Stack.objects.get(pk=request.POST["id"])
+            stack.title=serializer.validated_data.get("title")
+            stack.description=serializer.validated_data.get("description") 
+            stack.features=serializer.validated_data.get("features") 
+            stack.popularity=serializer.validated_data.get("popularity") 
+            stack.job_area=JobArea.objects.get(pk=request.POST["job_area"]) 
+            stack.save()
+            response_serializer = self.serializer_class(stack)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteStackAreaView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Stack.objects.get(pk=pk).delete()
+        return Response({"success": "1 stack deleted"}, status=200)
 
 
 class RoadmapViews(APIView):

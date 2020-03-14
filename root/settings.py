@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'jobhunter_db',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -111,10 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        
     )
 }
-
 
 
 # Internationalization
