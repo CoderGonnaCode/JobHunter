@@ -91,6 +91,32 @@ class HunterViews(APIView):
         else:
             return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            hunter = Hunter.objects.get(pk=request.POST["id"])
+            hunter.full_name=serializer.validated_data.get("full_name")
+            hunter.email=serializer.validated_data.get("email") 
+            hunter.phone=serializer.validated_data.get("phone") 
+            hunter.address=serializer.validated_data.get("address") 
+            hunter.skills=serializer.validated_data.get("skills") 
+            hunter.thumbnailPath=serializer.validated_data.get("thumbnailPath") 
+            hunter.experience=serializer.validated_data.get("experience") 
+            hunter.github_link=serializer.validated_data.get("github_link") 
+            hunter.linkedin_link=serializer.validated_data.get("linkedin_link") 
+            hunter.instagram_link=serializer.validated_data.get("instagram_link")
+            hunter.interests=serializer.validated_data.get("interests")
+            hunter.save()
+            response_serializer = self.serializer_class(hunter)
+            return Response(response_serializer.data)
+        else:
+            return Response({"msg": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteHunterView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def delete(self, request, pk, format=None):
+        Hunter.objects.get(pk=pk).delete()
+        return Response({"success": "1 user deleted"}, status=200)
 
 class CompanyViews(APIView):
 
